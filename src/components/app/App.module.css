@@ -1,0 +1,10 @@
+.main {
+    padding-top: 72px;
+    width: 1440px;
+    margin: 0 auto;
+    text-align: center;
+}
+.tasks {
+    display: flex;
+    gap: 20px;
+}
