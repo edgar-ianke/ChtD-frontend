@@ -1,0 +1,27 @@
+$mg-24: 24px;
+
+.button {
+    margin-bottom: $mg-24;
+    border-radius: 24px;
+}
+.canDrop {
+    animation: pulse 1s infinite ease-out;
+    box-shadow: 0 0 10px 2px rgb(255, 217, 0);
+}
+.isOver {
+    animation: pulse 1s infinite ease-out;
+    box-shadow: 0 0 10px 2px rgb(255, 0, 0);
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

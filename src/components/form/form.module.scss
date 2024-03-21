@@ -1,0 +1,57 @@
+$pad-12: 12px;
+$fs-default: 18px;
+$ff-roboto: "Roboto";
+
+.label {
+  display: block;
+  padding-bottom: 8px;
+  padding: $pad-12;
+  font-size: $fs-default;
+  font-family: $ff-roboto;
+  color: white;
+}
+
+.input {
+  width: 400px;
+  height: 48px;
+  padding: 0 $pad-12;
+  border-radius: 24px;
+  font-size: $fs-default;
+  font-family: $ff-roboto;
+}
+.textarea {
+  width: 400px;
+  height: 200px;
+  padding: $pad-12;
+  resize: none;
+  font-size: $fs-default;
+  font-family: $ff-roboto;
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #2f2f37;
+    margin-bottom: 24px;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    width: 8px;
+    background-color: #8585ad;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+.submit {
+  margin-top: $pad-12;
+  display: block;
+}
+.errorBar {
+  margin: 0;
+  padding-top: 4px;
+  padding-left: $pad-12;
+  height: 16px;
+  .error {
+    margin: 0;
+    font-size: 14px;
+    color: red;
+  }
+}

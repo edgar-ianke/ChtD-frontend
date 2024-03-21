@@ -1,28 +1,51 @@
 import { useSelector, useDispatch } from "react-redux";
-import { mockData } from "../../utils/mockData";
-import React from "react";
-import { add } from "../../services/features/toDosSlice";
-import styles from "./App.module.css";
+import React, { useEffect } from "react";
+import { fetchData, openTaskForm } from "../../services/features/toDosSlice";
+import styles from "./App.module.scss";
 import { TaskContainer } from "../task-container/taks-container";
-import { States } from "../../types/colorStates";
-import { fakeRequest } from "../../utils/fakeRequest";
-import { increment, decrement, incrementByAmount, selectCount } from "../../services/features/counterSlice";
+import { States } from "../../types/States";
+import store, { RootState } from "../../services/store";
+
+import { Button } from "../ui/button/button";
+import { Modal } from "../modal/modal";
+import { TaskForm } from "../form/form";
+import { TaskDetails } from "../task-details/task-details";
+import { Dustbin } from "../dustbin/dustbin";
+
 function App() {
-  const count = useSelector(selectCount);
-  const data = useSelector((state: any) => state.toDos.todos);
   const dispatch = useDispatch();
-  console.log(data);
-  dispatch(add(mockData))
+  const { taskFormVisible, taskDetailsVisible } = useSelector((state: RootState) => state.toDos);
+  useEffect(() => {
+    store.dispatch(fetchData());
+  }, []);
+  const handleAddClick = () => {
+    dispatch(openTaskForm());
+  };
   return (
     <div className={styles.main}>
-      <h1>{count}</h1>
-      <button onClick={() => dispatch(increment())}>+</button>
-      <button onClick={() => dispatch(decrement())}>-</button>
-      <button onClick={() => dispatch(incrementByAmount(2))}>+2</button>
-      <div className={styles.tasks}>
-        <TaskContainer name="Задачи" state={States.toDo} />
-        <TaskContainer name="В процессе" state={States.inProcess} />
-        <TaskContainer name="Выполнены" state={States.done} />
+      {taskFormVisible && (
+        <Modal>
+          <TaskForm />
+        </Modal>
+      )}
+      {taskDetailsVisible && (
+        <Modal>
+          <TaskDetails />
+        </Modal>
+      )}
+      <div className={styles.content}>
+        <div className={styles.buttonSection}>
+          <div className={`${styles.button}`}>
+            <Button onClick={handleAddClick}>Add task</Button>
+          </div>
+          <Dustbin />
+        </div>
+
+        <div className={styles.tasks}>
+          <TaskContainer name="Задачи" status={States.tasks} />
+          <TaskContainer name="В процессе" status={States.inprogress} />
+          <TaskContainer name="Выполнены" status={States.done} />
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,32 @@
+$mg-24: 24px;
+$custom-height: calc(100vh - 156px);
+$regular-height: 100%;
+.main {
+  padding-top: 156px;
+  width: 100%;
+  min-height: $custom-height;
+  max-height: $regular-height;
+  margin: 0;
+  background-image: url("../../images/image.jpg");
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+.tasks {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+.button {
+  margin-bottom: $mg-24;
+}
+.buttonSection {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
