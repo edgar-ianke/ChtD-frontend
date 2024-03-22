@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import styles from "./form.module.scss";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, } from "react";
 import { Button } from "../ui/button/button";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";

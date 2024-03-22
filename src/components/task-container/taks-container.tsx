@@ -1,6 +1,5 @@
 import styles from "./taks-container.module.css";
 import { States } from "../../types/States";
-import { Task } from "../task/task";
 import { useSelector } from "react-redux";
 import { Ttask } from "../../types/types";
 import { RootState } from "../../services/store";
@@ -15,16 +14,16 @@ interface ITaskContainer {
 }
 
 export const TaskContainer: React.FC<ITaskContainer> = ({ name, status }) => {
-  const tasks = useSelector((state: RootState) => state.toDos.tasks);
+  const tasks = useSelector((state: RootState) => state.toDos[status]);
 
   const dispatch = useDispatch();
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: "task",
     drop: (item: Record<string, string>) => {
       if (item.status !== status) {
-        console.log(item, status)
         const { title, description, id } = item;
-        dispatch(changeStatus({ title, description, id, status }));
+        const currStatus = item.status;
+        dispatch(changeStatus({ id, title, description, currStatus, nextStatus: status }));
       }
     },
     collect: (monitor) => ({
@@ -40,7 +39,7 @@ export const TaskContainer: React.FC<ITaskContainer> = ({ name, status }) => {
           tasks
             .filter((item) => item.status === status)
             .map((item: Ttask, i) => {
-              return <TaskElement key = {item.id} item={item} index={i} />;
+              return <TaskElement key={item.id} item={item} index={i} />;
             })}
       </div>
     </div>

@@ -1,10 +1,9 @@
-import { FC, ReactElement, ReactNode, useRef } from "react";
-import { Task } from "../task/task";
+import { FC, useRef } from "react";
 import { Ttask } from "../../types/types";
 import { XYCoord, useDrag, useDrop } from "react-dnd";
-import type { Identifier } from "dnd-core";
-import { moveTask } from "../../services/features/toDosSlice";
+import { moveTask, openTaskDetails, setCurrTask } from "../../services/features/toDosSlice";
 import { useDispatch } from "react-redux";
+import styles from "./task-element.module.scss";
 
 interface IProps {
   item: Ttask;
@@ -12,22 +11,23 @@ interface IProps {
 }
 
 export const TaskElement: FC<IProps> = ({ item, index }) => {
+  const { title, description, status } = item;
   const dispatch = useDispatch();
   const ref = useRef<HTMLDivElement>(null);
   const id = item.id;
   const [{ isDragging }, drag] = useDrag({
-    type: "taskElement",
+    type: "task",
     item: () => {
-      return { id, index };
+      return { id, title, description, status, index };
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   });
-if (isDragging) {
-}
+  if (isDragging) {
+  }
   const [{ handlerId }, drop] = useDrop({
-    accept: "taskElement",
+    accept: "task",
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -52,18 +52,24 @@ if (isDragging) {
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
-      console.log(item.id)
-      console.log(dragIndex)
       item.index = hoverIndex;
-      dispatch(moveTask({ hoverIndex, dragIndex }));
-
+      dispatch(moveTask({ hoverIndex, dragIndex, status: item.status }));
       return;
     },
   });
   drag(drop(ref));
+
+  const handleClick = () => {
+    dispatch(setCurrTask({id, status}));
+    dispatch(openTaskDetails());
+  };
+
   return (
     <div ref={ref} data-handler-id={handlerId}>
-      <Task key={item.id} title={item.title} description={item.description} id={item.id} status={item.status} />
+      <div onClick={handleClick} className={`${styles.card}`}>
+        <h2 className={`${styles.title} text`}>{title}</h2>
+        <p className={styles.description}>{description}</p>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, ReactElement, ReactNode, useEffect } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import styles from "./modal-overlay.module.css";
 import ReactDOM from "react-dom";
 const modalRoot = document.getElementById("modal-root") as HTMLLIElement;

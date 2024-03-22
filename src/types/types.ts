@@ -10,4 +10,6 @@ export type TInitState = {
   taskDetailsVisible: boolean;
   currTask: Ttask | null;
   tasks: Ttask[] | null;
+  inprogress: Ttask[] | null;
+  done: Ttask[] | null;
 };

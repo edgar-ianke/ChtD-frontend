@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./task-details.module.scss";
 import { RootState } from "../../services/store";
-import editIcon from "../../images/edit_icon.svg";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button/button";
@@ -24,7 +23,7 @@ export const TaskDetails = () => {
     errors.description = undefined;
   };
   const onSubmit = () => {
-    dispatch(editTask(getValues("description")));
+    dispatch(editTask({description: getValues("description"), status: task!.status}));
     dispatch(closeModal())
   };
   return (
