@@ -26,6 +26,7 @@ export const TaskDetails = () => {
     dispatch(editTask({description: getValues("description"), status: task!.status}));
     dispatch(closeModal())
   };
+ 
   return (
     <div className={styles.main}>
       <h2 className={`${styles.title} text`}>{task?.title}</h2>

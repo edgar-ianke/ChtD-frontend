@@ -5,6 +5,13 @@ export type Ttask = {
   status: string;
 };
 
+export interface ITask {
+    userId: number;
+    id: number;
+    title: string;
+    completed: boolean;
+}
+
 export type TInitState = {
   taskFormVisible: boolean;
   taskDetailsVisible: boolean;
@@ -12,4 +19,5 @@ export type TInitState = {
   tasks: Ttask[] | null;
   inprogress: Ttask[] | null;
   done: Ttask[] | null;
+  data: null | ITask[]
 };

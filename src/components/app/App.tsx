@@ -1,16 +1,16 @@
 import { useSelector, useDispatch } from "react-redux";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { fetchData, openTaskForm } from "../../services/features/toDosSlice";
 import styles from "./App.module.scss";
 import { TaskContainer } from "../task-container/taks-container";
 import { States } from "../../types/States";
 import store, { RootState } from "../../services/store";
-
-import { Button } from "../ui/button/button";
+// import { Button } from "../ui/button/button";
 import { Modal } from "../modal/modal";
 import { TaskForm } from "../form/form";
 import { TaskDetails } from "../task-details/task-details";
 import { Dustbin } from "../dustbin/dustbin";
+import { Button } from "@mui/material";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ function App() {
       <div className={styles.content}>
         <div className={styles.buttonSection}>
           <div className={`${styles.button}`}>
-            <Button onClick={handleAddClick}>Add task</Button>
+            <Button variant="contained" onClick={handleAddClick}>Add task</Button>
           </div>
           <Dustbin />
         </div>

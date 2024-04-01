@@ -9,22 +9,16 @@ interface IModalOverlay {
 }
 
 export const ModalOverlay: FC<IModalOverlay> = ({ handleClose, children }) => {
-  const handleOverlayClose = (evt: React.MouseEvent) => {
-    if (evt.target === evt.currentTarget) handleClose();
+  const handleEscClose = (evt: KeyboardEvent) => {
+    if (evt.key === "Escape") handleClose();
   };
-
   useEffect(() => {
-    const handleEscClose = (evt: KeyboardEvent) => {
-      if (evt.key === "Escape") handleClose();
-    };
     document.addEventListener("keydown", handleEscClose);
     return () => document.removeEventListener("keydown", handleEscClose);
   }, []);
   return ReactDOM.createPortal(
     <>
-      <div className={styles.overlay}>
-        {children}
-      </div>
+      <div className={styles.overlay}>{children}</div>
     </>,
     modalRoot
   );

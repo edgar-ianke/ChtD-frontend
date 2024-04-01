@@ -5,16 +5,16 @@ import { moveTask, openTaskDetails, setCurrTask } from "../../services/features/
 import { useDispatch } from "react-redux";
 import styles from "./task-element.module.scss";
 
+
 interface IProps {
   item: Ttask;
   index: number;
 }
 
 export const TaskElement: FC<IProps> = ({ item, index }) => {
-  const { title, description, status } = item;
+  const { title, description, status, id } = item;
   const dispatch = useDispatch();
   const ref = useRef<HTMLDivElement>(null);
-  const id = item.id;
   const [{ isDragging }, drag] = useDrag({
     type: "task",
     item: () => {
@@ -60,7 +60,7 @@ export const TaskElement: FC<IProps> = ({ item, index }) => {
   drag(drop(ref));
 
   const handleClick = () => {
-    dispatch(setCurrTask({id, status}));
+    dispatch(setCurrTask({ id, status }));
     dispatch(openTaskDetails());
   };
 

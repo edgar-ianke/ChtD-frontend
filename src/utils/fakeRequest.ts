@@ -5,5 +5,5 @@ export const fakeRequest = async () => {
       resolve(mockData);
     }, 1000);
   });
-  return res
+  return res;
 };

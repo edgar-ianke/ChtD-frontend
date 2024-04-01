@@ -6,6 +6,7 @@ import { States } from "../../types/States";
 export const initState: TInitState = {
   taskFormVisible: false,
   taskDetailsVisible: false,
+  data: null,
   currTask: null,
   tasks: null,
   inprogress: null,
@@ -66,9 +67,10 @@ export const fetchData = () => {
   return async (dispatch: Dispatch) => {
     const data = await fakeRequest();
     dispatch(getData(data));
+    return data
   };
 };
-
+ type t = ReturnType<typeof fetchData>
 export const {
   getData,
   closeModal,
