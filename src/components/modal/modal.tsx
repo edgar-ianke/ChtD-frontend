@@ -3,7 +3,7 @@ import styles from "./modal.module.css";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../services/features/toDosSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import ReactDOM from "react-dom";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
 
@@ -21,10 +21,10 @@ export const Modal: FC<IModal> = ({ children }) => {
   return ReactDOM.createPortal(
     <>
       <ModalOverlay handleClose={close}>
-        <div className={styles.modal}>
+        <div className={`${styles.modal} pad-12`}>
           {children}
           <div className={styles.xmark}>
-            <FontAwesomeIcon onClick={close} icon={faCircleXmark} size="2x" color="white" />
+            <FontAwesomeIcon onClick={close} icon={faXmark} size="2x" color="white" />
           </div>
         </div>
       </ModalOverlay>

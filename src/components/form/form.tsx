@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
+import SendIcon from "@mui/icons-material/Send";
 import styles from "./form.module.scss";
-import { FC, } from "react";
-import { Button } from "../ui/button/button";
+import { FC } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import { addTask, closeModal } from "../../services/features/toDosSlice";
 import { States } from "../../types/States";
+import { Box, Button, TextField } from "@mui/material";
+import formatDate from "../../utils/formatDate";
 
 type FormValues = {
   title: string;
@@ -19,49 +21,49 @@ export const TaskForm: FC = () => {
     formState: { errors },
     handleSubmit,
   } = useForm<FormValues>({ mode: "onChange" });
-
   const onSubmit = (data: FormValues) => {
-    const task = { id: uuidv4(), title: data.title, description: data.description, status: States.tasks };
-    dispatch(addTask(task))
-    dispatch(closeModal())
+    const task = { id: uuidv4(), title: data.title, description: data.description, status: States.tasks, date: formatDate(new Date()) };
+    dispatch(addTask(task));
+    dispatch(closeModal());
   };
   return (
     <form onSubmit={handleSubmit((data) => onSubmit(data))}>
-      <label className={styles.label} htmlFor="title">
-        Title:
-      </label>
-      <input
-        {...register("title", {
-          required: "This field is required to fill",
-        })}
-        id="title"
-        type="text"
-        placeholder="Enter title"
-        className={styles.input}
-      ></input>
-      <div className={styles.errorBar}>
-        {errors?.title && <p className={styles.error}>{errors.title?.message as string}</p>}
-      </div>
-      <label className={styles.label} htmlFor="description">
-        Description:
-      </label>
-      <textarea
-        {...register("description", {
-          required: "This field is required to fill",
-          minLength: {
-            value: 10,
-            message: "Minimum simbols required: 10",
-          },
-        })}
-        id="description"
-        placeholder="Enter description"
-        className={styles.textarea}
-      ></textarea>
-      <div className={styles.errorBar}>
-        {errors?.description && <p className={styles.error}>{errors.description?.message as string}</p>}
-      </div>
-      <Button extraClass={styles.submit} type="submit">
-        Push task
+      <Box sx={{ display: "flex", flexWrap: "wrap", flexDirection: "column"}}>
+        <h2 className="text">New Task</h2>
+        <TextField
+          sx={{ width: "400px", marginBottom: "12px" }}
+          error={errors.title ? true : false}
+          id="title"
+          type="text"
+          placeholder="Enter title"
+          {...register("title", {
+            required: "This field is required to fill",
+          })}
+          label="Enter title"
+          variant="standard"
+          helperText={errors.title ? errors.title.message : ""}
+        />
+        <TextField
+          sx={{ width: "400px", marginBottom: "12px" }}
+          multiline
+          error={errors.description ? true : false}
+          id="description"
+          type="text"
+          placeholder="Enter description"
+          {...register("description", {
+            required: "This field is required to fill",
+            minLength: {
+              value: 10,
+              message: "Minimum simbols required: 10",
+            },
+          })}
+          label="Enter description"
+          variant="standard"
+          helperText={errors.description ? errors.description.message : ""}
+        />
+      </Box>
+      <Button type='submit' variant="contained" endIcon={<SendIcon />}>
+        Send
       </Button>
     </form>
   );

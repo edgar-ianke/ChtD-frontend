@@ -1,28 +1,15 @@
 .main {
   margin: 0;
-  width: 400px;
-  border-radius: 5px;
+  border-radius: 12px;
   height: fit-content;
-  padding: 16px;
+  background-color: rgb(206, 206, 206);
 }
 .title {
   margin: 0 auto;
-  color: rgb(252, 251, 251);
-  text-shadow: 0px 0px 16px rgba(255, 255, 255, 0.25);
+  color: rgb(0, 0, 0);
   padding-bottom: 12px;
-  font-size: 48px;
-}
-.tasks {
-  background-color: rgba(0, 0, 0, 0.8);
-  box-shadow: 10px 10px 10px 0px rgb(15, 17, 16);
-}
-.inprogress {
-  background-color: rgba(0, 7, 100, 0.8);
-  box-shadow: 10px 10px 10px 0px rgb(15, 17, 16);
-}
-.done {
-  background-color: rgba(0, 100, 45, 0.8);
-  box-shadow: 10px 10px 10px 0px rgb(15, 17, 16);
+  font-size: 24px;
+
 }
 .taskContainer {
   width: 100%;

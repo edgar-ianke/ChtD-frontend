@@ -4,7 +4,8 @@ import { XYCoord, useDrag, useDrop } from "react-dnd";
 import { moveTask, openTaskDetails, setCurrTask } from "../../services/features/toDosSlice";
 import { useDispatch } from "react-redux";
 import styles from "./task-element.module.scss";
-
+import Card from 'react-bootstrap/Card';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface IProps {
   item: Ttask;
@@ -12,7 +13,7 @@ interface IProps {
 }
 
 export const TaskElement: FC<IProps> = ({ item, index }) => {
-  const { title, description, status, id } = item;
+  const { title, description, status, id, date } = item;
   const dispatch = useDispatch();
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag({
@@ -58,7 +59,11 @@ export const TaskElement: FC<IProps> = ({ item, index }) => {
     },
   });
   drag(drop(ref));
-
+  const variant: Record<string,string> = {
+    'tasks': 'Primary',
+    'inprogress': 'Light',
+    'done': 'Success'
+  }
   const handleClick = () => {
     dispatch(setCurrTask({ id, status }));
     dispatch(openTaskDetails());
@@ -66,9 +71,22 @@ export const TaskElement: FC<IProps> = ({ item, index }) => {
 
   return (
     <div ref={ref} data-handler-id={handlerId}>
-      <div onClick={handleClick} className={`${styles.card}`}>
-        <h2 className={`${styles.title} text`}>{title}</h2>
-        <p className={styles.description}>{description}</p>
+      <div onClick={handleClick}>
+      <Card
+          bg={variant[status].toLowerCase()}
+          key={variant[status]}
+          text={variant[status].toLowerCase() === 'light' ? 'dark' : 'white'}
+          style={{ width: '380px' }}
+          className="mb-2"
+        >
+          <Card.Header>{date}</Card.Header>
+          <Card.Body>
+            <Card.Title> {title} </Card.Title>
+            <Card.Text>
+              {description}
+            </Card.Text>
+          </Card.Body>
+        </Card>
       </div>
     </div>
   );

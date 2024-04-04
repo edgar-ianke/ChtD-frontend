@@ -1,8 +1,8 @@
-$mg-12: 12px;
-$custom-height: calc(100vh - 156px);
+$custom-height: calc(100vh - 96px);
 $regular-height: 100%;
 .main {
-  padding-top: 156px;
+  padding-top: 48px;
+  padding-bottom: 48px;
   width: 100%;
   min-height: $custom-height;
   max-height: $regular-height;
@@ -13,7 +13,7 @@ $regular-height: 100%;
   position: relative;
 }
 .content {
-  max-width: 1200px;
+  max-width: 1248px;
   margin: 0 auto;
   position: relative;
 }
@@ -21,9 +21,6 @@ $regular-height: 100%;
   display: flex;
   gap: 20px;
   justify-content: center;
-}
-.button {
-  margin-bottom: $mg-12;
 }
 .buttonSection {
   display: flex;

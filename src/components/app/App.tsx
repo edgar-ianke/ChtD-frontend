@@ -5,7 +5,6 @@ import styles from "./App.module.scss";
 import { TaskContainer } from "../task-container/taks-container";
 import { States } from "../../types/States";
 import store, { RootState } from "../../services/store";
-// import { Button } from "../ui/button/button";
 import { Modal } from "../modal/modal";
 import { TaskForm } from "../form/form";
 import { TaskDetails } from "../task-details/task-details";
@@ -35,16 +34,18 @@ function App() {
       )}
       <div className={styles.content}>
         <div className={styles.buttonSection}>
-          <div className={`${styles.button}`}>
-            <Button variant="contained" onClick={handleAddClick}>Add task</Button>
+          <div className={`mgb-12`}>
+            <Button variant="contained" onClick={handleAddClick}>
+              Add task
+            </Button>
           </div>
           <Dustbin />
         </div>
 
         <div className={styles.tasks}>
-          <TaskContainer name="Задачи" status={States.tasks} />
-          <TaskContainer name="В процессе" status={States.inprogress} />
-          <TaskContainer name="Выполнены" status={States.done} />
+          <TaskContainer name="Upcoming" status={States.tasks} />
+          <TaskContainer name="In progress" status={States.inprogress} />
+          <TaskContainer name="Done" status={States.done} />
         </div>
       </div>
     </div>

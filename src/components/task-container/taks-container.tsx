@@ -32,8 +32,8 @@ export const TaskContainer: React.FC<ITaskContainer> = ({ name, status }) => {
     }),
   }));
   return (
-    <div ref={drop} className={`${styles.main} ${styles[status]}`}>
-      <h2 className={`${styles.title} text-bold`}>{name}</h2>
+    <div ref={drop} className={`${styles.main} pad-12`}>
+      <h2 className={`${styles.title} text`}>{name}</h2>
       <div className={styles.taskContainer}>
         {tasks &&
           tasks

@@ -3,8 +3,15 @@ import styles from "./task-details.module.scss";
 import { RootState } from "../../services/store";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button/button";
 import { closeModal, editTask } from "../../services/features/toDosSlice";
+import { Button, TextField } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import SendIcon from "@mui/icons-material/Send";
+
+type FormValues = {
+  description?: string;
+};
 
 export const TaskDetails = () => {
   const [editMode, setEditMode] = useState(false);
@@ -15,7 +22,7 @@ export const TaskDetails = () => {
     handleSubmit,
     getValues,
     setValue,
-  } = useForm({ mode: "onChange" });
+  } = useForm<FormValues>({ mode: "onChange" });
   const dispatch = useDispatch();
   const handleEditClick = () => {
     setEditMode(!editMode);
@@ -23,37 +30,42 @@ export const TaskDetails = () => {
     errors.description = undefined;
   };
   const onSubmit = () => {
-    dispatch(editTask({description: getValues("description"), status: task!.status}));
-    dispatch(closeModal())
+    dispatch(editTask({ description: getValues("description"), status: task!.status }));
+    dispatch(closeModal());
   };
- 
+
   return (
     <div className={styles.main}>
-      <h2 className={`${styles.title} text`}>{task?.title}</h2>
+      <h4 className={`${styles.title} text padb-12`}>{task?.title}</h4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.descriptionSection}>
           {editMode ? (
-            <div className={styles.textAreaSection}>
-              <textarea
-                className={styles.textArea}
-                {...register("description", {
-                  required: "This field is required to fill",
-                  minLength: {
-                    value: 10,
-                    message: "Minimum simbols required: 10",
-                  },
-                })}
-              ></textarea>
-              <div className={styles.errorBar}>
-                {errors?.description && <p className={styles.error}>{errors.description?.message as string}</p>}
-              </div>
-            </div>
+            <TextField
+              sx={{ width: "400px", marginBottom: "12px" }}
+              multiline
+              error={errors.description ? true : false}
+              id="description"
+              type="text"
+              placeholder="Enter description"
+              {...register("description", {
+                required: "This field is required to fill",
+                minLength: {
+                  value: 10,
+                  message: "Minimum simbols required: 10",
+                },
+              })}
+              label="Enter description"
+              variant="standard"
+              helperText={errors.description ? errors.description.message : ""}
+            />
           ) : (
             <p className={styles.description}>{task?.description}</p>
           )}
-          <div className={styles.editIcon} onClick={handleEditClick}></div>
+         <FontAwesomeIcon icon={faPenToSquare} onClick={handleEditClick} />
         </div>
-        {editMode && <Button type="submit">Сохранить</Button>}
+        {editMode && <Button type='submit' variant="contained" endIcon={<SendIcon />}>
+        Patch
+      </Button>}
       </form>
     </div>
   );
