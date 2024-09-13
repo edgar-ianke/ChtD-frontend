@@ -3,15 +3,27 @@
   border-radius: 12px;
   height: fit-content;
   background-color: rgb(206, 206, 206);
+  width: 475px;
+  min-width: 320px;
 }
 .title {
-  margin: 0 auto;
+  margin: 0;
   color: rgb(0, 0, 0);
   padding-bottom: 12px;
   font-size: 24px;
+  width: fit-content;
 
 }
 .taskContainer {
-  width: 100%;
   padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.plug {
+  font-size: 24px;
+  text-align: center;
 }

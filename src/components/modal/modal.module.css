@@ -1,17 +1,15 @@
 .modal {
-  width: max-content;
-  height: min-content;
+  height: 100vh;
   background-color: rgb(255, 255, 255);
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  max-width: 972px;
 }
 .xmark {
   position: absolute;
-  top: -28px;
-  right: -28px;
+  top: 12px;
+  right: 12px;
   cursor: pointer;
 }

@@ -1,54 +1,86 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { fetchData, openTaskForm } from "../../services/features/toDosSlice";
-import styles from "./App.module.scss";
-import { TaskContainer } from "../task-container/taks-container";
-import { States } from "../../types/States";
+import { useSelector } from "react-redux";
 import store, { RootState } from "../../services/store";
 import { Modal } from "../modal/modal";
-import { TaskForm } from "../form/form";
+import { TaskForm } from "../newTask/new-task";
 import { TaskDetails } from "../task-details/task-details";
-import { Dustbin } from "../dustbin/dustbin";
-import { Button } from "@mui/material";
+import Header from "../header";
+import Footer from "../footer";
+import { Routes, Route } from "react-router-dom";
+import HomePage from "../homePage";
+import SignUpPage from "../signin-signup/signup";
+import SignInPage from "../signin-signup/signin";
+import { useEffect } from "react";
+import { auth, closeEditModal } from "../../services/features/userSlice";
+import {
+  closeTaskDetailsModal,
+  closeTaskListModal,
+  closeTaskModal,
+  getTodoLists,
+} from "../../services/features/toDosSlice";
+import { ProfilePage } from "../profile-page";
+import { EditProfileForm } from "../editProfile";
+import { TaskListForm } from "../new-tasklist";
 
 function App() {
-  const dispatch = useDispatch();
-  const { taskFormVisible, taskDetailsVisible } = useSelector((state: RootState) => state.toDos);
+  const { taskFormVisible, taskDetailsVisible, taskListFormVisible } = useSelector((state: RootState) => state.toDos);
+  const { editProfileVisible } = useSelector((state: RootState) => state.user);
   useEffect(() => {
-    store.dispatch(fetchData());
+    store.dispatch(auth());
+    store.dispatch(getTodoLists());
   }, []);
-  const handleAddClick = () => {
-    dispatch(openTaskForm());
-  };
   return (
-    <div className={styles.main}>
-      {taskFormVisible && (
-        <Modal>
-          <TaskForm />
-        </Modal>
-      )}
-      {taskDetailsVisible && (
-        <Modal>
-          <TaskDetails />
-        </Modal>
-      )}
-      <div className={styles.content}>
-        <div className={styles.buttonSection}>
-          <div className={`mgb-12`}>
-            <Button variant="contained" onClick={handleAddClick}>
-              Add task
-            </Button>
-          </div>
-          <Dustbin />
-        </div>
-
-        <div className={styles.tasks}>
-          <TaskContainer name="Upcoming" status={States.tasks} />
-          <TaskContainer name="In progress" status={States.inprogress} />
-          <TaskContainer name="Done" status={States.done} />
-        </div>
-      </div>
-    </div>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/profile" element={<ProfilePage />}>
+          {editProfileVisible && (
+            <Route
+              path="edit"
+              element={
+                <Modal closeFunc={closeEditModal()} redirectTo="/profile">
+                  <EditProfileForm />
+                </Modal>
+              }
+            />
+          )}
+        </Route>
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/" element={<HomePage />}>
+          {taskFormVisible && (
+            <Route
+              path="/new-task"
+              element={
+                <Modal closeFunc={closeTaskModal()}>
+                  <TaskForm />
+                </Modal>
+              }
+            />
+          )}
+          {taskListFormVisible && (
+            <Route
+              path="/new-tasklist"
+              element={
+                <Modal closeFunc={closeTaskListModal()}>
+                  <TaskListForm />
+                </Modal>
+              }
+            />
+          )}
+          {taskDetailsVisible && (
+            <Route
+              path="/task/:taskId"
+              element={
+                <Modal closeFunc={closeTaskDetailsModal()}>
+                  <TaskDetails />
+                </Modal>
+              }
+            />
+          )}
+        </Route>
+      </Routes>
+      <Footer />
+    </>
   );
 }
 

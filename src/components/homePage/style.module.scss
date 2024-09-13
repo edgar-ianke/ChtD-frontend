@@ -1,0 +1,19 @@
+$custom-height: calc(100vh - 96px);
+$regular-height: 100%;
+
+.main {
+  max-width: 1440px;
+  margin: 0 auto;
+  position: relative;
+  min-height: calc(100vh - 168px);
+}
+.tasks {
+  display: flex;
+  gap: 15px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}

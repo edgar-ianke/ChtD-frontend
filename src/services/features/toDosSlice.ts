@@ -1,86 +1,159 @@
-import { createSlice, Dispatch } from "@reduxjs/toolkit";
-import { fakeRequest } from "../../utils/fakeRequest";
-import { TInitState, Ttask } from "../../types/types";
-import { States } from "../../types/States";
+import { createAsyncThunk, createSlice, Dispatch } from "@reduxjs/toolkit";
 
-export const initState: TInitState = {
+import { TAddTodo, TChangeStatus, TTodosState } from "../../types/types";
+import {
+  addCommentApi,
+  addTodoList,
+  assignTodoApi,
+  changeTodoStatus,
+  createTodo,
+  deleteTodo,
+  deleteTodoList,
+  getTodoListsApi,
+  updateTodo,
+} from "../../utils/api";
+
+const initState: TTodosState = {
   taskFormVisible: false,
+  taskListFormVisible: false,
   taskDetailsVisible: false,
   data: null,
   currTask: null,
-  tasks: null,
-  inprogress: null,
-  done: null,
+  tasklists: [],
 };
+
+export const getTodoLists = createAsyncThunk("todos/getTodoLists", async () => {
+  const todos = await getTodoListsApi();
+  return todos;
+});
+
+export const addTodo = createAsyncThunk("todos/addTodo", async (data: TAddTodo) => {
+  const newTodo = await createTodo(data);
+  return newTodo;
+});
+
+export const changeStatus = createAsyncThunk("todos/changeStatus", async ({ newtodoListId, todoId }: TChangeStatus) => {
+  const newTodoList = await changeTodoStatus({ newtodoListId, todoId });
+  return newTodoList;
+});
+
+export const editTodo = createAsyncThunk(
+  "todos/editTodo",
+  async ({ id, description }: { id: number; description: string }) => {
+    return await updateTodo(id, { description });
+  }
+);
+
+export const removeTodo = createAsyncThunk("todos/removeTodo", async (id: number) => {
+  return await deleteTodo(id);
+});
+
+export const assignTodo = createAsyncThunk("todos/assignTodo", async (id: number) => {
+  return await assignTodoApi(id);
+});
+
+export const addComment = createAsyncThunk("todos/addComment", async ({ id, text }: { id: number; text: string }) => {
+  return await addCommentApi(id, text);
+});
+
+export const deleteList = createAsyncThunk("todos/deleteList", async (id: number) => {
+  await deleteTodoList(id);
+  return id;
+});
+
+export const addList = createAsyncThunk("todos/addList", async (name: string) => {
+  return await addTodoList({ name });
+});
 
 export const toDosSlice = createSlice({
   name: "todos",
   initialState: initState,
   reducers: {
-    getData: (state, action) => {
-      state.tasks = action.payload.filter((item: Ttask) => item.status === States.tasks);
-      state.inprogress = action.payload.filter((item: Ttask) => item.status === States.inprogress);
-      state.done = action.payload.filter((item: Ttask) => item.status === States.done);
-    },
     openTaskForm: (state) => {
       state.taskFormVisible = true;
     },
-    closeModal: (state) => {
+    openTaskListForm: (state) => {
+      state.taskListFormVisible = true;
+    },
+    closeTaskModal: (state) => {
       state.taskFormVisible = false;
       state.taskDetailsVisible = false;
+      state.taskListFormVisible = false;
     },
-    addTask: (state, action) => {
-      state.tasks!.push(action.payload);
+    closeTaskListModal: (state) => {
+      state.taskFormVisible = false;
+      state.taskDetailsVisible = false;
+      state.taskListFormVisible = false;
+    },
+    closeTaskDetailsModal: (state) => {
+      state.taskFormVisible = false;
+      state.taskDetailsVisible = false;
+      state.taskListFormVisible = false;
     },
     openTaskDetails: (state) => {
       state.taskDetailsVisible = true;
     },
-    setCurrTask: (state, action) => {
-      const status: States = action.payload.status;
-      state.currTask = state[status]!.filter((item) => item.id === action.payload.id)[0];
+    setCurrTask: (state, { payload }) => {
+      const tasklistIndex = state.tasklists.findIndex((tasklist) => tasklist.name === payload.status);
+      const task = state.tasklists[tasklistIndex].todos.find((todo) => todo.id === payload.id);
+      state.currTask = task ? task : null;
     },
-    editTask: (state, action) => {
-      const status: States = action.payload.status;
-      const index = state[status]!.findIndex((item) => item.id === state.currTask?.id);
-      state.currTask!.description = action.payload.description;
-      state[status]!.splice(index, 1, state.currTask!);
-    },
-    deleteTask: (state, action) => {
-      const status: States = action.payload.status;
-      state[status] = state[status]!.filter((item) => item.id !== action.payload.id);
-    },
-    changeStatus: (state, action) => {
-      const { currStatus, nextStatus } = action.payload;
-      const index = state[currStatus as States]!.findIndex((item) => item.id === action.payload.id);
-      const task = state[currStatus as States]!.splice(index, 1)[0];
-      task!.status = action.payload.nextStatus;
-      state[nextStatus as States]?.push(task);
-    },
-    moveTask: (state, action) => {
-      const status: States = action.payload.status;
-      state[status]!.splice(action.payload.hoverIndex, 0, state[status]!.splice(action.payload.dragIndex, 1)[0]);
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getTodoLists.fulfilled, (state, { payload }) => {
+      state.tasklists = payload;
+      state.tasklists.sort((a, b) => a.id - b.id);
+    });
+    builder.addCase(addTodo.fulfilled, (state, { payload }) => {
+      const tasklistIndex = state.tasklists.findIndex((tasklist) => tasklist.name === payload.todoList.name);
+      const newTask = {
+        id: payload.id,
+        createdAt: payload.createdAt,
+        updatedAt: payload.updatedAt,
+        title: payload.title,
+        description: payload.description,
+        author: payload.author,
+      };
+      state.tasklists[tasklistIndex].todos.push(newTask);
+    });
+    builder.addCase(editTodo.fulfilled, (state, { payload }) => {
+      const tasklistIndex = state.tasklists.findIndex((tasklist) => tasklist.name === payload.todoList.name);
+      const todoIndex = state.tasklists[tasklistIndex].todos.findIndex((todo) => todo.id === payload.id);
+      state.tasklists[tasklistIndex].todos[todoIndex].description = payload.description;
+    });
+    builder.addCase(removeTodo.fulfilled, (state, { payload }) => {
+      const tasklistIndex = state.tasklists.findIndex((tasklist) => tasklist.name === payload.todoList.name);
+      const todoIndex = state.tasklists[tasklistIndex].todos.findIndex((todo) => todo.id === payload.id);
+      state.tasklists[tasklistIndex].todos.splice(todoIndex, 1);
+    });
+    builder.addCase(changeStatus.fulfilled, (state, { payload }) => {
+      state.tasklists = payload;
+      state.tasklists.sort((a, b) => a.id - b.id);
+    });
+    builder.addCase(deleteList.fulfilled, (state, { payload }) => {
+      const taskListIndex = state.tasklists.findIndex((tasklist) => tasklist.id === payload);
+      state.tasklists.splice(taskListIndex, 1);
+    });
+    builder.addCase(addList.fulfilled, (state, { payload }) => {
+      state.tasklists.push(payload);
+      state.tasklists.sort((a, b) => a.id - b.id);
+    });
+    builder.addCase(assignTodo.fulfilled, (state, { payload }) => {
+      const tasklistIndex = state.tasklists.findIndex((tasklist) => tasklist.name === payload.todoList.name);
+      const todoIndex = state.tasklists[tasklistIndex].todos.findIndex((todo) => todo.id === payload.id);
+      state.tasklists[tasklistIndex].todos[todoIndex].assignee = payload.assignee;
+      state.currTask!.assignee = payload.assignee;
+    });
   },
 });
 
-export const fetchData = () => {
-  return async (dispatch: Dispatch) => {
-    const data = await fakeRequest();
-    dispatch(getData(data));
-    return data
-  };
-};
- type t = ReturnType<typeof fetchData>
 export const {
-  getData,
-  closeModal,
+  closeTaskDetailsModal,
+  closeTaskListModal,
+  closeTaskModal,
   openTaskForm,
-  addTask,
   setCurrTask,
   openTaskDetails,
-  editTask,
-  deleteTask,
-  changeStatus,
-  moveTask,
+  openTaskListForm,
 } = toDosSlice.actions;
 export default toDosSlice.reducer;

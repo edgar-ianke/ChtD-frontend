@@ -1,22 +1,26 @@
 import { FC, ReactElement } from "react";
 import styles from "./modal.module.css";
 import { useDispatch } from "react-redux";
-import { closeModal } from "../../services/features/toDosSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import ReactDOM from "react-dom";
 import { ModalOverlay } from "../modal-overlay/modal-overlay";
+import { useNavigate } from "react-router-dom";
 
 const modalRoot = document.getElementById("modal-root") as HTMLLIElement;
 
 interface IModal {
   children?: ReactElement;
+  closeFunc: any;
+  redirectTo?: string;
 }
 
-export const Modal: FC<IModal> = ({ children }) => {
+export const Modal: FC<IModal> = ({ children, closeFunc, redirectTo = "/" }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const close = () => {
-    dispatch(closeModal());
+    navigate(redirectTo, { replace: true });
+    dispatch(closeFunc);
   };
   return ReactDOM.createPortal(
     <>
@@ -24,7 +28,7 @@ export const Modal: FC<IModal> = ({ children }) => {
         <div className={`${styles.modal} pad-12`}>
           {children}
           <div className={styles.xmark}>
-            <FontAwesomeIcon onClick={close} icon={faXmark} size="2x" color="white" />
+            <FontAwesomeIcon onClick={close} icon={faXmark} size="2x" color="black" />
           </div>
         </div>
       </ModalOverlay>

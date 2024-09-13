@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@types/uuid": "^9.0.8",
+    "dompurify": "^3.1.6",
     "sass": "^1.72.0"
   }
 }

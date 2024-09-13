@@ -2,16 +2,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./dustbin.module.scss";
 import { useDrop } from "react-dnd";
 import { useDispatch } from "react-redux";
-import { deleteTask } from "../../services/features/toDosSlice";
 import { Button } from "@mui/material";
 
 export const Dustbin = () => {
   const dispatch = useDispatch();
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: "task",
-    drop: (id) => {
-      dispatch(deleteTask(id));
-    },
+    drop: (id) => {},
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),

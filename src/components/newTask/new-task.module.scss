@@ -1,0 +1,88 @@
+.form {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+}
+.divWrapper {
+  max-height: 728px;
+  margin-bottom: 12px;
+  padding-right: 4px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: #919191;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    width: 4px;
+    background-color: #5762ff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
+.label {
+  padding-top: 8px;
+  margin: 0;
+  font-size: 18px;
+}
+.input {
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.42);
+  &:focus {
+    border: 2px solid #1976d2;
+    outline: none;
+  }
+}
+.editableDiv {
+  position: relative;
+  padding: 8px;
+  border-radius: 12px;
+  min-height: 120px;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.42);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  &:empty::before {
+    content: attr(data-placeholder);
+    color: rgba(0, 0, 0, 0.54);
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    pointer-events: none;
+  }
+  img {
+    max-width: 100%;
+  }
+  &:focus {
+    border: 2px solid #1976d2;
+    outline: none;
+  }
+}
+
+.error {
+  color: red;
+  margin: 0;
+  padding-left: 8px;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}

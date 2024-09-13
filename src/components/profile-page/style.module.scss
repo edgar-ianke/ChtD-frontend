@@ -1,0 +1,35 @@
+.main {
+  min-height: calc(100vh - 168px);
+}
+
+.content {
+  display: flex;
+  padding: 24px;
+  justify-content: center;
+}
+
+.avatar {
+  border-radius: 50%;
+  height: 240px;
+  padding-right: 24px;
+}
+
+.annotation {
+    margin: 0;
+    padding-top: 8px;
+}
+
+.text {
+    width: 300px;
+    margin: 0;
+    padding: 4px 4px 4px 8px;
+    border: 1px solid rgb(25, 0, 255);
+    border-radius: 24px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding-bottom: 12px;
+}

@@ -1,72 +1,119 @@
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./task-details.module.scss";
-import { RootState } from "../../services/store";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { closeModal, editTask } from "../../services/features/toDosSlice";
-import { Button, TextField } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import store, { RootState } from "../../services/store";
+import React, { useEffect, useState } from "react";
+import { assignTodo, closeTaskDetailsModal, editTodo, removeTodo } from "../../services/features/toDosSlice";
+import { Button } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-
-type FormValues = {
-  description?: string;
-};
+import DeleteIcon from "@mui/icons-material/Delete";
+import DOMPurify from "dompurify";
+import formatDate from "../../utils/formatDate";
+import { useNavigate, useParams } from "react-router-dom";
+import { AssignmentIndOutlined } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 
 export const TaskDetails = () => {
+  const id = useParams().taksId;
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
+  const [error, setError] = useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
   const task = useSelector((state: RootState) => state.toDos.currTask);
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    getValues,
-    setValue,
-  } = useForm<FormValues>({ mode: "onChange" });
+  const userInfo = useSelector((state: RootState) => state.user.info);
   const dispatch = useDispatch();
+
   const handleEditClick = () => {
-    setEditMode(!editMode);
-    setValue("description", task?.description);
-    errors.description = undefined;
+    setEditMode(true);
   };
-  const onSubmit = () => {
-    dispatch(editTask({ description: getValues("description"), status: task!.status }));
-    dispatch(closeModal());
+
+  useEffect(() => {
+    if (ref.current && task?.description) {
+      const cleanHTML = DOMPurify.sanitize(task.description);
+      ref.current.innerHTML = cleanHTML;
+    }
+  }, [task]);
+
+  const handleSaveClick = () => {
+    if (ref.current) {
+      const content = ref.current.innerHTML;
+      if (content === "") {
+        setError(true);
+        ref.current.focus();
+        return;
+      }
+      setEditMode(false);
+      setError(false);
+      console.log(id);
+      store.dispatch(editTodo({ id: task!.id, description: content }));
+    }
+  };
+
+  const handleDeleteClick = () => {
+    store.dispatch(removeTodo(task!.id));
+    dispatch(closeTaskDetailsModal());
+    navigate("/", { replace: true });
+  };
+
+  const handleAssignClick = () => {
+    store.dispatch(assignTodo(task!.id));
   };
 
   return (
     <div className={styles.main}>
-      <h4 className={`${styles.title} text padb-12`}>{task?.title}</h4>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.descriptionSection}>
-          {editMode ? (
-            <TextField
-              sx={{ width: "400px", marginBottom: "12px" }}
-              multiline
-              error={errors.description ? true : false}
-              id="description"
-              type="text"
-              placeholder="Enter description"
-              {...register("description", {
-                required: "This field is required to fill",
-                minLength: {
-                  value: 10,
-                  message: "Minimum simbols required: 10",
-                },
-              })}
-              label="Enter description"
-              variant="standard"
-              helperText={errors.description ? errors.description.message : ""}
-            />
-          ) : (
-            <p className={styles.description}>{task?.description}</p>
-          )}
-         <FontAwesomeIcon icon={faPenToSquare} onClick={handleEditClick} />
+      <div className={styles.task}>
+        <h4 className={`${styles.title} text mgb-12`}>{task?.title}</h4>
+        <div className={styles.divWrapper}>
+          <div ref={ref} contentEditable={editMode} className={styles.editableDiv}></div>
+          {error && <p className={styles.error}>Fill the field</p>}
         </div>
-        {editMode && <Button type='submit' variant="contained" endIcon={<SendIcon />}>
-        Patch
-      </Button>}
-      </form>
+        {editMode && (
+          <Button disabled={false} type="button" onClick={handleSaveClick} variant="contained" endIcon={<SendIcon />}>
+            Save
+          </Button>
+        )}
+        {!editMode && (
+          <div className={styles.buttonGroup}>
+            {task?.author.username === userInfo.username && (
+              <>
+                <Button type="button" startIcon={<EditIcon />} variant="contained" onClick={handleEditClick}>
+                  Edit
+                </Button>
+                <Button variant="contained" startIcon={<DeleteIcon />} onClick={handleDeleteClick}>
+                  Delete
+                </Button>
+              </>
+            )}
+            {!task?.assignee && (
+              <Button variant="contained" startIcon={<AssignmentIndOutlined />} onClick={handleAssignClick}>
+                Assign
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+      <div className={`${styles.detailsWrap} padl-12`}>
+        <div className={styles.details}>
+          <div>
+            <p className={`${styles.author} text-bold  padr-12`}>Author:</p>
+            <div className={styles.authorInfo}>
+              <p>{task?.author.username}</p>
+              <img className={styles.avatar} src={task?.author.avatar} alt="404" />
+            </div>
+          </div>
+          <div>
+            <p className={`${styles.author} text-bold  padr-12`}>Assigned:</p>
+            {task?.assignee ? (
+              <div className={styles.authorInfo}>
+                <p className={styles.author}>{task?.assignee.username}</p>
+                <img className={styles.avatar} src={task?.assignee.avatar} alt="404" />
+              </div>
+            ) : (
+              <p>-</p>
+            )}
+          </div>
+          <p className={styles.date}>{task && formatDate(task.createdAt)}</p>
+        </div>
+      </div>
     </div>
   );
 };

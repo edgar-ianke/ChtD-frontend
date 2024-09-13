@@ -1,0 +1,23 @@
+.header {
+    height: 96px;   
+    width: 100%;
+    display: flex;
+    position: relative;    
+    justify-content: flex-end;
+    background-color: rgb(25, 0, 255);
+}
+
+.logo {
+    position: absolute;
+    width: 120px;
+    height: 89px;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+}
+
+.signSection {
+    padding-right: 24px;
+    display: flex;
+    align-items: center;
+}

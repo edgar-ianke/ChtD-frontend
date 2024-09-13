@@ -1,19 +1,21 @@
 import { FC, useRef } from "react";
-import { Ttask } from "../../types/types";
+import { Ttask, Ttodo } from "../../types/types";
 import { XYCoord, useDrag, useDrop } from "react-dnd";
-import { moveTask, openTaskDetails, setCurrTask } from "../../services/features/toDosSlice";
+import { openTaskDetails, setCurrTask } from "../../services/features/toDosSlice";
 import { useDispatch } from "react-redux";
 import styles from "./task-element.module.scss";
-import Card from 'react-bootstrap/Card';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Card from "react-bootstrap/Card";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Link } from "react-router-dom";
 
 interface IProps {
-  item: Ttask;
+  todo: Ttodo;
   index: number;
+  status: string;
 }
 
-export const TaskElement: FC<IProps> = ({ item, index }) => {
-  const { title, description, status, id, date } = item;
+export const TaskElement: FC<IProps> = ({ todo, index, status }) => {
+  const { title, description, id, createdAt, updatedAt } = todo;
   const dispatch = useDispatch();
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag({
@@ -54,16 +56,15 @@ export const TaskElement: FC<IProps> = ({ item, index }) => {
         return;
       }
       item.index = hoverIndex;
-      dispatch(moveTask({ hoverIndex, dragIndex, status: item.status }));
       return;
     },
   });
   drag(drop(ref));
-  const variant: Record<string,string> = {
-    'tasks': 'Primary',
-    'inprogress': 'Light',
-    'done': 'Success'
-  }
+  const variant: Record<string, string> = {
+    tasks: "Primary",
+    inprogress: "Light",
+    done: "Success",
+  };
   const handleClick = () => {
     dispatch(setCurrTask({ id, status }));
     dispatch(openTaskDetails());
@@ -71,23 +72,14 @@ export const TaskElement: FC<IProps> = ({ item, index }) => {
 
   return (
     <div ref={ref} data-handler-id={handlerId}>
-      <div onClick={handleClick}>
-      <Card
-          bg={variant[status].toLowerCase()}
-          key={variant[status]}
-          text={variant[status].toLowerCase() === 'light' ? 'dark' : 'white'}
-          style={{ width: '380px' }}
-          className="mb-2"
-        >
-          <Card.Header>{date}</Card.Header>
+      <Link className={styles.link} to={`/task/${id}`} onClick={handleClick}>
+        <Card bg={"primary"} key={"primary"} text={"light"} className="mb-2">
+          <Card.Header></Card.Header>
           <Card.Body>
             <Card.Title> {title} </Card.Title>
-            <Card.Text>
-              {description}
-            </Card.Text>
           </Card.Body>
         </Card>
-      </div>
+      </Link>
     </div>
   );
 };
