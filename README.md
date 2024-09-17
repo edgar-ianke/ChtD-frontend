@@ -12,7 +12,7 @@
 - React DnD
 - Redux ToolKit
 
-#### (Ссылка на бэкэнд)[https://github.com/edgar-ianke/ch-td-back]
+#### [Ссылка на бэкэнд](https://github.com/edgar-ianke/ch-td-back)
     
 #### Запуск проекта:
 
